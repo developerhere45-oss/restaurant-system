@@ -1,248 +1,478 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Restaurant Menu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Menu</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI';
-  background: #f5f5f5;
+body{margin:0;font-family:sans-serif;background:#f5f5f5;}
+.page{display:none;}
+.active{display:block;}
+
+/* Page1 */
+.choice{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:20px;
+}
+.btn{
+  padding:15px 30px;
+  background:red;
+  color:white;
+  border:none;
+  border-radius:10px;
+  font-size:18px;
+}
+/* CART UI */
+.cart-header{
+  padding:15px;
+  font-size:20px;
+  font-weight:bold;
 }
 
-/* Layout */
-.container {
-  display: flex;
+.cart-list{
+  padding:10px;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 60px;
-  background: #eee;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px 0;
+.cart-item{
+  background:white;
+  border-radius:12px;
+  padding:10px;
+  margin-bottom:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.sidebar div {
-  margin: 10px 0;
-  font-size: 20px;
+.cart-item h4{
+  margin:0;
 }
 
-/* Main */
-.main {
-  flex: 1;
-  padding: 10px;
+.cart-item span{
+  font-size:14px;
+  color:gray;
 }
 
-/* Header */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* USER INPUT */
+.user-box{
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 
-.cart-icon {
-  position: relative;
+.user-box input{
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-size:14px;
 }
 
-.cart-count {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background: orange;
-  padding: 2px 6px;
-  border-radius: 50%;
-  font-size: 12px;
+/* BILL */
+.bill-box{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  padding:15px;
+  box-shadow:0 -2px 10px rgba(0,0,0,0.1);
 }
 
-/* Card */
-.card {
-  background: white;
-  border-radius: 12px;
-  margin: 10px 0;
-  padding: 10px;
-  display: flex;
-  gap: 10px;
+.bill-box h3{
+  margin:0 0 10px;
 }
 
-.card img {
-  width: 90px;
-  height: 90px;
-  border-radius: 10px;
+.order-btn{
+  width:100%;
+  padding:15px;
+  background:linear-gradient(45deg,red,orange);
+  color:white;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:bold;
+}
+/* FULL SCREEN CLEAN UI */
+.kiosk-container{
+  height:100vh;
+  background:#f5f7fb;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
 }
 
-.card h4 {
-  margin: 0;
+.kiosk-container h1{
+  font-size:26px;
+  margin-bottom:40px;
+  color:#333;
 }
 
-.btn {
-  background: red;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
+/* OPTIONS */
+.kiosk-options{
+  display:flex;
+  gap:20px;
 }
 
-/* Quantity */
-.qty {
-  display: flex;
-  gap: 5px;
-  margin-top: 5px;
+/* CARDS */
+.kiosk-card{
+  width:160px;
+  height:180px;
+  background:white;
+  border-radius:15px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.1);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  transition:0.3s;
 }
 
-/* Checkout */
-.checkout {
-  position: fixed;
-  bottom: 0;
-  width: calc(100% - 60px);
-  background: red;
-  color: white;
-  text-align: center;
-  padding: 12px;
-  font-weight: bold;
+.kiosk-card:hover{
+  transform:scale(1.05);
+}
+
+.kiosk-card img{
+  width:60px;
+  margin-bottom:10px;
+}
+
+.kiosk-card h2{
+  margin:0;
+  font-size:18px;
+  color:#222;
+}
+/* Menu */
+.card{
+  background:white;
+  margin:10px;
+  padding:10px;
+  border-radius:10px;
+  display:flex;
+  gap:10px;
+}
+img{width:80px;height:80px;border-radius:10px;}
+.qty{display:flex;gap:5px;}
+.cartBtn{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:red;
+  color:white;
+  text-align:center;
+  padding:12px;
+}
+/* TOP WELCOME */
+.top-box{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.welcome-img{
+  width:80px;
+  height:80px;
+  object-fit:contain;
+  margin-bottom:10px;
+}
+
+.top-box h2{
+  margin:0;
+  font-size:22px;
+  color:#444;
+}
+
+/* OPTIONAL: smooth look */
+.kiosk-container{
+  background:#f5f7fb;
+}
+/* HEADER */
+.menu-header{
+  padding:15px;
+  background:white;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.menu-header h2{
+  margin:0 0 10px;
+}
+
+.menu-header input{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #ddd;
+}
+
+/* CATEGORY */
+.category-bar{
+  display:flex;
+  gap:10px;
+  padding:10px;
+  overflow-x:auto;
+}
+
+.category-bar button{
+  padding:8px 15px;
+  border:none;
+  border-radius:20px;
+  background:#eee;
+  cursor:pointer;
+}
+
+/* GRID */
+.menu-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:10px;
+}
+
+/* CARD */
+.menu-card{
+  background:white;
+  border-radius:15px;
+  padding:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+.menu-card img{
+  width:100%;
+  height:100px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+.menu-card h4{
+  margin:5px 0;
+}
+
+.price{
+  color:red;
+  font-weight:bold;
+}
+
+/* ADD BUTTON */
+.add-btn{
+  background:linear-gradient(45deg,red,orange);
+  color:white;
+  border:none;
+  padding:5px 10px;
+  border-radius:8px;
+}
+
+/* Cart */
+.cartItem{
+  background:white;
+  margin:10px;
+  padding:10px;
+  border-radius:10px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div id="page1" class="page active">
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    🍔 🍕 🍟 🥤 🍦
-  </div>
+  <div class="kiosk-container">
 
-  <!-- Main -->
-  <div class="main">
-
-    <div class="header">
-      <h3>Chicken Menu</h3>
-      <div class="cart-icon">
-        🛒 <span id="count" class="cart-count">0</span>
-      </div>
+    <!-- 👇 NEW HEADER -->
+    <div class="top-box">
+      <img src="log.png" class="welcome-img">
+      <h2>Welcome 🙏</h2>
     </div>
 
-    <div id="menu"></div>
+    <h1>Where will you be eating today?</h1>
+
+    <div class="kiosk-options">
+
+      <div class="kiosk-card" onclick="selectType('dinein')">
+        <img src="dine.png">
+        <h3>Eat In</h3>
+      </div>
+
+      <div class="kiosk-card" onclick="selectType('takeaway')">
+        <img src="take.png">
+        <h3>Take Away</h3>
+      </div>
+
+    </div>
 
   </div>
 
 </div>
 
-<div class="checkout" onclick="placeOrder()">
-  CHECK OUT →
+<div id="page2" class="page">
+
+  <!-- HEADER -->
+  <div class="menu-header">
+    <h2>Explore Menu 🍽️</h2>
+    <input type="text" placeholder="Search food..." oninput="searchItem(this.value)">
+  </div>
+
+  <!-- CATEGORY -->
+  <div class="category-bar">
+    <button onclick="filter('all')">All</button>
+    <button onclick="filter('pizza')">Pizza</button>
+    <button onclick="filter('burger')">Burger</button>
+    <button onclick="filter('noodles')">Noodles</button>
+  </div>
+
+  <!-- MENU ITEMS -->
+  <div id="menu" class="menu-grid"></div>
+
+  <!-- CART BUTTON -->
+  <div class="cartBtn" onclick="goCart()">
+    🛒 View Cart
+  </div>
+
+</div>
+
+<div id="page3" class="page">
+
+  <div class="cart-header">
+    <h2>Your Cart 🛒</h2>
+  </div>
+
+  <div id="cart" class="cart-list"></div>
+
+  <div class="user-box">
+    <input id="name" placeholder="👤 Your Name">
+    <input id="phone" placeholder="📞 Phone Number">
+    <input id="table" placeholder="🍽️ Table Number">
+  </div>
+
+  <div class="bill-box">
+    <h3 id="total">₹0</h3>
+    <button class="order-btn" onclick="placeOrder()">Place Order 🚀</button>
+  </div>
+
 </div>
 
 <script>
-let items = [
-  {name:"Fried Chicken", price:180, img:"chicken1.png"},
-  {name:"Roasted Chicken", price:220, img:"chicken2.png"},
-  {name:"Nuggets", price:150, img:"chicken3.png"}
+
+let type="";
+let items=[
+  {name:"Pizza",price:199,img:"pizaa.png"},
+  {name:"Burger",price:149,img:"burger.png"},
+  {name:"Noodles",price:199,img:"noodles.png"}
 ];
 
-let cart = [];
+let cart=[];
 
-// render
-function render(){
-  let html = "";
+// PAGE SWITCH
+function show(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
 
-  items.forEach((item,i)=>{
-    html += `
-    <div class="card">
+function selectType(t){
+  type = t; // 🔥 ensure saved properly
+  show("page2");
+  renderMenu();
+}
+// MENU
+function renderMenu(list = items){
+  let html="";
+
+  list.forEach((item,i)=>{
+    html+=`
+    <div class="menu-card">
       <img src="${item.img}">
-      <div>
-        <h4>${item.name}</h4>
-        <p>₹${item.price}</p>
+      <h4>${item.name}</h4>
+      <p class="price">₹${item.price}</p>
 
-        <button class="btn" onclick="add(${i})">Add to Cart</button>
+      <button class="add-btn" onclick="add(${i})">Add</button>
+    </div>`;
+  });
 
-        <div class="qty">
-          <button onclick="dec(${i})">-</button>
-          <span id="q${i}">0</span>
-          <button onclick="inc(${i})">+</button>
+  document.getElementById("menu").innerHTML=html;
+}
+// ADD
+function add(i){
+  let f=cart.find(x=>x.name===items[i].name);
+  if(f) f.qty++;
+  else cart.push({...items[i],qty:1});
+  update();
+}
+
+// REMOVE
+function dec(i){
+  let f=cart.find(x=>x.name===items[i].name);
+  if(f){
+    f.qty--;
+    if(f.qty<=0) cart=cart.filter(x=>x.name!==items[i].name);
+  }
+  update();
+}
+
+// UPDATE
+function update(){
+  items.forEach((item,i)=>{
+    let f=cart.find(x=>x.name===item.name);
+    document.getElementById("q"+i).innerText=f?f.qty:0;
+  });
+}
+
+// GO CART
+function goCart(){
+  show("page3");
+  renderCart();
+}
+
+// CART
+function renderCart(){
+  let html="";
+  let total=0;
+
+  cart.forEach(item=>{
+    total += item.price * item.qty;
+
+    html += `
+      <div class="cart-item">
+        <div>
+          <h4>${item.name}</h4>
+          <span>₹${item.price} × ${item.qty}</span>
         </div>
+        <b>₹${item.price * item.qty}</b>
       </div>
-    </div>
     `;
   });
 
-  document.getElementById("menu").innerHTML = html;
+  document.getElementById("cart").innerHTML = html;
+  document.getElementById("total").innerText = "Total: ₹" + total;
 }
-
-// add
-function add(i){
-  let ex = cart.find(x=>x.name===items[i].name);
-  if(ex) ex.qty++;
-  else cart.push({...items[i], qty:1});
-
-  update();
-}
-
-function inc(i){ add(i); }
-
-function dec(i){
-  let item = cart.find(x=>x.name===items[i].name);
-  if(item){
-    item.qty--;
-    if(item.qty<=0){
-      cart = cart.filter(x=>x.name!==items[i].name);
-    }
-  }
-  update();
-}
-
-function update(){
-  document.getElementById("count").innerText = cart.length;
-
-  items.forEach((item,i)=>{
-    let f = cart.find(x=>x.name===item.name);
-    document.getElementById("q"+i).innerText = f ? f.qty : 0;
-  });
-}
-
-// place order
+// ORDER
 function placeOrder(){
-  if(cart.length === 0){
-    alert("Cart is empty!");
-    return;
-  }
+  let name=document.getElementById("name").value;
+  let phone=document.getElementById("phone").value;
+  let table=document.getElementById("table").value;
 
-  let name = prompt("Enter Name");
-  let phone = prompt("Enter Phone");
-  let table = prompt("Enter Table");
-
-  // 🔥 FIX: qty remove karke clean items bhejo
-  let cleanItems = [];
-
-  cart.forEach(item=>{
-    for(let i=0;i<item.qty;i++){
-      cleanItems.push({
-        name: item.name,
-        price: item.price
-      });
-    }
-  });
-
-  fetch("/order",  {
+  fetch("/order",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({
+    body:JSON.stringify({
+      type:type,
       customer:name,
       phone:phone,
       table:table,
-      items: cleanItems
+      items:cart
     })
   });
 
   alert("Order placed!");
-  cart = [];
+  location.reload();
 }
 
-render();
 </script>
 
 </body>
