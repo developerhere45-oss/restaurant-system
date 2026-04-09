@@ -88,7 +88,7 @@ body {
 <div class="grid" id="orders"></div>
 
 <script>
-const socket = io("http://localhost:3000");
+const socket = io();
 
 let orders = [];
 let counts = {new:0, process:0, ready:0, served:0};
