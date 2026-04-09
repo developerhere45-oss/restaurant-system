@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurant Dashboard</title>
+
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI';
+  background: #1c2b33;
+  color: white;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  background: #24363f;
+}
+
+.stat {
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  width: 70px;
+}
+
+.red { background: #ff4d4d; }
+.yellow { background: #ffc107; color: black; }
+.green { background: #28a745; }
+.gray { background: #6c757d; }
+
+/* Grid */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+}
+
+/* Card */
+.card {
+  width: 250px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  color: black;
+}
+
+.card-header {
+  padding: 10px;
+  color: white;
+}
+
+.card-body {
+  padding: 10px;
+  font-size: 14px;
+}
+
+/* Buttons */
+.btn {
+  margin-top: 10px;
+  padding: 6px;
+  border: none;
+  width: 100%;
+}
+
+.start { background: black; color: white; }
+.finish { background: #ccc; }
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="stat red"><span id="new">0</span><br>New</div>
+  <div class="stat yellow"><span id="process">0</span><br>Process</div>
+  <div class="stat green"><span id="ready">0</span><br>Ready</div>
+  <div class="stat gray"><span id="served">0</span><br>Served</div>
+</div>
+
+<div class="grid" id="orders"></div>
+
+<script>
+const socket = io("http://localhost:3000");
+
+let orders = [];
+let counts = {new:0, process:0, ready:0, served:0};
+
+socket.on("newOrder", (order)=>{
+  order.status = "new";
+  orders.push(order);
+  counts.new++;
+  updateStats();
+  render();
+});
+
+function updateStats(){
+  document.getElementById("new").innerText = counts.new;
+  document.getElementById("process").innerText = counts.process;
+  document.getElementById("ready").innerText = counts.ready;
+  document.getElementById("served").innerText = counts.served;
+}
+
+function render(){
+  let html = "";
+
+  orders.forEach((o,i)=>{
+    let color = o.status === "new" ? "#ff4d4d" :
+                o.status === "process" ? "#ffc107" :
+                o.status === "ready" ? "#28a745" : "#6c757d";
+
+    html += `
+    <div class="card">
+      <div class="card-header" style="background:${color}">
+        Table ${o.table || 1}
+      </div>
+      <div class="card-body">
+        ${o.items.map(x=>x.name).join("<br>")}
+
+        <button class="btn start" onclick="start(${i})">Start</button>
+        <button class="btn finish" onclick="finish(${i})">Finish</button>
+      </div>
+    </div>
+    `;
+  });
+
+  document.getElementById("orders").innerHTML = html;
+}
+
+function start(i){
+  counts[orders[i].status]--;
+  orders[i].status = "process";
+  counts.process++;
+  updateStats();
+  render();
+}
+
+function finish(i){
+  counts[orders[i].status]--;
+  orders[i].status = "ready";
+  counts.ready++;
+  updateStats();
+  render();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurant Menu</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI';
+  background: #f5f5f5;
+}
+
+/* Layout */
+.container {
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 60px;
+  background: #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.sidebar div {
+  margin: 10px 0;
+  font-size: 20px;
+}
+
+/* Main */
+.main {
+  flex: 1;
+  padding: 10px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-icon {
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: orange;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-size: 12px;
+}
+
+/* Card */
+.card {
+  background: white;
+  border-radius: 12px;
+  margin: 10px 0;
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.card img {
+  width: 90px;
+  height: 90px;
+  border-radius: 10px;
+}
+
+.card h4 {
+  margin: 0;
+}
+
+.btn {
+  background: red;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* Quantity */
+.qty {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+/* Checkout */
+.checkout {
+  position: fixed;
+  bottom: 0;
+  width: calc(100% - 60px);
+  background: red;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    🍔 🍕 🍟 🥤 🍦
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <div class="header">
+      <h3>Chicken Menu</h3>
+      <div class="cart-icon">
+        🛒 <span id="count" class="cart-count">0</span>
+      </div>
+    </div>
+
+    <div id="menu"></div>
+
+  </div>
+
+</div>
+
+<div class="checkout" onclick="placeOrder()">
+  CHECK OUT →
+</div>
+
+<script>
+let items = [
+  {name:"Fried Chicken", price:180, img:"chicken1.png"},
+  {name:"Roasted Chicken", price:220, img:"chicken2.png"},
+  {name:"Nuggets", price:150, img:"chicken3.png"}
+];
+
+let cart = [];
+
+// render
+function render(){
+  let html = "";
+
+  items.forEach((item,i)=>{
+    html += `
+    <div class="card">
+      <img src="${item.img}">
+      <div>
+        <h4>${item.name}</h4>
+        <p>₹${item.price}</p>
+
+        <button class="btn" onclick="add(${i})">Add to Cart</button>
+
+        <div class="qty">
+          <button onclick="dec(${i})">-</button>
+          <span id="q${i}">0</span>
+          <button onclick="inc(${i})">+</button>
+        </div>
+      </div>
+    </div>
+    `;
+  });
+
+  document.getElementById("menu").innerHTML = html;
+}
+
+// add
+function add(i){
+  let ex = cart.find(x=>x.name===items[i].name);
+  if(ex) ex.qty++;
+  else cart.push({...items[i], qty:1});
+
+  update();
+}
+
+function inc(i){ add(i); }
+
+function dec(i){
+  let item = cart.find(x=>x.name===items[i].name);
+  if(item){
+    item.qty--;
+    if(item.qty<=0){
+      cart = cart.filter(x=>x.name!==items[i].name);
+    }
+  }
+  update();
+}
+
+function update(){
+  document.getElementById("count").innerText = cart.length;
+
+  items.forEach((item,i)=>{
+    let f = cart.find(x=>x.name===item.name);
+    document.getElementById("q"+i).innerText = f ? f.qty : 0;
+  });
+}
+
+// place order
+function placeOrder(){
+  if(cart.length === 0){
+    alert("Cart is empty!");
+    return;
+  }
+
+  let name = prompt("Enter Name");
+  let phone = prompt("Enter Phone");
+  let table = prompt("Enter Table");
+
+  // 🔥 FIX: qty remove karke clean items bhejo
+  let cleanItems = [];
+
+  cart.forEach(item=>{
+    for(let i=0;i<item.qty;i++){
+      cleanItems.push({
+        name: item.name,
+        price: item.price
+      });
+    }
+  });
+
+  fetch("http://localhost:3000/order", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      customer:name,
+      phone:phone,
+      table:table,
+      items: cleanItems
+    })
+  });
+
+  alert("Order placed!");
+  cart = [];
+}
+
+render();
+</script>
+
+</body>
+</html>
